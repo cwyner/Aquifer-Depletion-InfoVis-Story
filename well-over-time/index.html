@@ -8,8 +8,6 @@
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <script src="https://jspm.dev/npm:@spectrum-web-components/theme@0.40/sp-theme.js"></script>
     <script src="https://jspm.dev/npm:@spectrum-web-components/theme@0.40/src/themes.js"></script>
-    <script src="https://jspm.dev/npm:@spectrum-web-components/slider@0.40/sp-slider.js"></script>
-    <script src="https://jspm.dev/npm:@spectrum-web-components/slider@0.40/sp-slider-handle.js"></script>
 </head>
 
 <body>
@@ -28,18 +26,11 @@
                 <!-- Year options will be dynamically inserted here -->
             </select>
         </div>
-
-        <h4 class="numeric-input-section-title">Water Depth filter<span id="range-result">MIN - MAX</span></h4>
-        <div class="input-grid numeric-range-input">
-            <sp-slider id="numeric-range" variant="range" step="1" min="0" max="50" label-visibility="none">
-                <sp-slider-handle id="slider-handle-min" slot="handle" name="min" label="Minimum" value="0"></sp-slider-handle>
-                <sp-slider-handle id="slider-handle-max" slot="handle" name="max" label="Maximum" value="50"></sp-slider-handle>
-            </sp-slider>
-        </div>
     </section>
 
     <svg width="800" height="400"></svg>
 
     <script src="main.js"></script>
 </body>
+
 </html>

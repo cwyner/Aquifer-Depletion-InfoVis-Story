@@ -1,7 +1,7 @@
 const svg = d3.select("svg");
 const svgWidth = +svg.attr("width");
 const svgHeight = +svg.attr("height");
-const padding = { top: 20, right: 30, bottom: 50, left: 50 };
+const padding = { top: 20, right: 30, bottom: 50, left: 80 }; // Increased left padding
 
 const axisGroup = svg.append("g").attr("class", "axis-group");
 const lineGroup = svg.append("g").attr("class", "line-group");
@@ -100,19 +100,46 @@ function updateChart(data) {
         .attr("transform", `translate(${padding.left}, 0)`)
         .call(d3.axisLeft(yScale));
 
+    // Chart Title
+    svg.append("text")
+        .attr("class", "chart-title")
+        .attr("x", svgWidth / 2)
+        .attr("y", padding.top - 10)
+        .attr("text-anchor", "middle")
+        .text("Average Water Depth Over Time");
+
+    // X-axis Title
+    svg.append("text")
+        .attr("class", "x-axis-title")
+        .attr("x", svgWidth / 2)
+        .attr("y", svgHeight - 5)
+        .attr("text-anchor", "middle")
+        .text("Year");
+
+    // Y-axis Title
+    svg.append("text")
+    .attr("class", "y-axis-title")
+    .attr("x", -svgHeight / 2)  // Keeping it centered
+    .attr("y", padding.left - 40)  // Move title further left if necessary
+    .attr("text-anchor", "middle")
+    .attr("transform", "rotate(-90)")
+    .text("Average Water Depth (ft)");
+
+
     // Bars
     const bars = lineGroup.selectAll("rect").data(filteredData);
 
     bars.enter()
         .append("rect")
         .merge(bars)
-        .attr("x", d => xScale(d.year_datetime))
+        .attr("x", d => xScale(d.year_datetime) + xScale.bandwidth() * 0.25)
         .attr("y", d => yScale(d.avg_water_depth_ft))
-        .attr("width", xScale.bandwidth())
-        .attr("height", d => svgHeight - padding.bottom - yScale(d.avg_water_depth_ft))
-        .attr("fill", "steelblue");
+        .attr("width", xScale.bandwidth() * 0.5)
+        .attr("height", d => svgHeight - padding.bottom - yScale(d.avg_water_depth_ft));
 
     bars.exit().remove();
+
+    d3.select("svg").attr("transform", "translate(50, 50)"); // Move entire chart 50px down
 }
 
 loadData();

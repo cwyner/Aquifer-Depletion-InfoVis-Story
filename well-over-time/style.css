@@ -9,11 +9,11 @@ main {
 }
 
 body {
-    background-color: rgb(212, 233, 226);
+    background-color: rgb(222, 240, 247);
 }
 
 rect {
-    fill: rgb(31, 57, 51);
+    fill: rgb(46, 72, 158);
 }
 
 .bar-group text {
@@ -25,6 +25,7 @@ rect {
 
 .tick text {
     font-family: 'Inter', sans-serif;
+    font-size: 14px; 
 }
 
 .tick line {
@@ -103,3 +104,27 @@ fieldset {
 fieldset label {
     padding-left: 12px;
 }
+/* Chart Title Style */
+.chart-title {
+    font-family: 'Inter', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    fill: #333;
+}
+
+/* X-Axis Title Style */
+.x-axis-title {
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+    fill: #333;
+}
+
+/* Y-Axis Title Style */
+.y-axis-title {
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+    fill: #333;
+}
+
