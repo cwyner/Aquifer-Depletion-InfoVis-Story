@@ -1,0 +1,105 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
+main {
+    font-family: 'Inter', sans-serif;
+    display: flex;
+    font-size: 16px;
+    margin: 16px;
+    gap: 32px;
+}
+
+body {
+    background-color: rgb(212, 233, 226);
+}
+
+rect {
+    fill: rgb(31, 57, 51);
+}
+
+.bar-group text {
+    font-size: 14px;
+    font-weight: 400;
+    font-variation-settings: 'opsz' 6;
+    text-anchor: end;
+}
+
+.tick text {
+    font-family: 'Inter', sans-serif;
+}
+
+.tick line {
+    stroke: rgb(209, 217, 214);
+}
+
+path.domain {
+    stroke: none;
+}
+
+tspan.annotation {
+    font-size: 10px;
+    font-weight: 500;
+    font-variation-settings: 'opsz' 0;
+    opacity: 0.6;
+}
+
+.numeric-labels {
+    min-width: 360px;
+    display: flex;
+    justify-content: space-between;
+
+    flex: auto;
+    font-size: 14px;
+    overflow: hidden;
+    text-align: start;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.input-grid {
+    background-color: #ffffff;
+    border-radius: 16px;
+    padding: 8px 16px;
+    margin: 8px 0 24px 0;
+    min-width: 240px;
+}
+
+.numeric-range-input {
+    box-sizing: border-box;
+    display: grid;
+    align-items: center;
+    padding: 16px 16px 8px 16px;
+}
+
+.input-label {
+    background-color: #ffffff;
+    border-radius: 16px;
+}
+
+h4 {
+    padding: 0 16px 0 16px;
+    font-weight: 600;
+    opacity: 0.6;
+    font-size: 13px;
+    margin: 16px 0 0 0;
+}
+
+h4.numeric-input-section-title {
+    display: flex;
+    justify-content: space-between;
+    font-feature-settings: 'tnum';
+}
+
+fieldset {
+    border: none;
+    margin: 8px 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    column-gap: 0px;
+    row-gap: 16px;
+    align-items: center;
+}
+
+fieldset label {
+    padding-left: 12px;
+}
