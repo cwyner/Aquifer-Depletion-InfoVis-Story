@@ -107,6 +107,8 @@ fieldset label {
 /* Chart Title Style */
 .chart-title {
     font-family: 'Inter', sans-serif;
+    align-items: center;
+    justify-content: center;
     font-size: 20px;
     font-weight: 700;
     fill: #333;
@@ -128,3 +130,14 @@ fieldset label {
     fill: #333;
 }
 
+.x-grid line,
+.y-grid line {
+    stroke: #d3d3d3; /* Light gray for gridlines */
+    stroke-opacity: 0.7;
+    shape-rendering: crispEdges;
+}
+
+.x-grid path,
+.y-grid path {
+    display: none; /* Hide the axis line for gridlines */
+}
