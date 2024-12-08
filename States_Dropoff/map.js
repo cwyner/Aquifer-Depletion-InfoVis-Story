@@ -8,8 +8,8 @@ const colorScale = d3.scaleLinear()
   
 // Load the processed data CSV and GeoJSON
 Promise.all([
-  d3.csv("processed_water_depth_data.csv"),
-  d3.json("us-states-simple.json")
+  d3.csv("States_Dropoff/processed_water_depth_data.csv"),
+  d3.json("States_Dropoff/us-states-simple.json")
 ]).then(([data, geojson]) => {
   console.log("Data and GeoJSON loaded");
 
