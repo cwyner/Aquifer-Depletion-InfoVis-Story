@@ -2,17 +2,25 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Dot Density Map</title>
+  <title>Final Project: The Aquabats</title>
   <script src="https://d3js.org/d3.v7.min.js"></script>
-  <style>
-    .dot {
-      stroke: #000;
-      stroke-width: 0.5px;
-    }
-  </style>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <svg width="960" height="600"></svg>
+  <h1>Aquabats Final Project!</h1>
+
+  <!-- Rayan's Graph -->
+  <h2>Map of Well Locations across the Country</h2>
+  <svg width="960" height="600" id="dot-density-map"></svg>
   <script src="dot_density_map/dot-density-map.js"></script>
+
+  <!-- Charles's Graph -->
+  <h2>Map of Water Level Changes over the Decades</h2>
+  <div id="controls"></div>
+  <svg id="map"></svg>
+  <div id="tooltip" class="tooltip" style="display: none;"></div>
+  <script src="States_Dropoff/map.js"></script>
+
+
 </body>
 </html>

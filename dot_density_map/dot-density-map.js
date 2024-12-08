@@ -2,7 +2,7 @@ const width = 960;
 const height = 600;
 
 // Define SVG canvas
-const svg = d3.select("svg");
+const svg = d3.select("svg#dot-density-map");
 
 // Define a projection and path generator
 const projection = d3.geoAlbersUsa().translate([width / 2, height / 2]).scale(1200);
