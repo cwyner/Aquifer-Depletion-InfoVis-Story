@@ -17,6 +17,16 @@
 
   <!-- Charles's Graph -->
   <h2>Map of Water Level Changes over the Decades</h2>
+  <p>
+    This map analyzes the average water level dropoff per state, by decade.
+    It was calculated as follows: each water well site has coordinates associated with it,
+    so we took each pair of coordinates and classified them into states. Then, to calculate dropoff (or water gain),
+    we took the measurement from the beginning of the decade (e.g. January 1st, 2000) and the measurement
+    at the end of the decade (e.g. December 31st, 2009) for every single well. For every well in a given state,
+    this calculation was averaged to get the values you see when you hover over a state. A state is colored red
+    if, on average, it has lost water in that decade, or green if it has gained water. The colors grow more intense
+    the further these values get from zero. If the value is close to zero, it will be close to a white color.
+  </p>
   <div id="controls"></div>
   <svg id="map"></svg>
   <div id="tooltip" class="tooltip" style="display: none;"></div>

@@ -6,15 +6,20 @@ const colorScale = d3.scaleLinear()
   .domain([minDropoff, 0, maxDropoff]) // Ensure domain spans actual data range
   .range(["red", "white", "green"]); // Diverging color scheme
 
-// Load the data and GeoJSON
+// Load the processed data CSV and GeoJSON
 Promise.all([
-  d3.csv("States_Dropoff/yearly_avg_water_depth.csv"),
+  d3.csv("States_Dropoff/processed_water_depth_data.csv"),
   d3.json("States_Dropoff/us-states-simple.json")
 ]).then(([data, geojson]) => {
   console.log("Data and GeoJSON loaded");
 
-  // Preprocess data by decade
-  const processedData = preprocessDataByDecade(data, geojson);
+  // Normalize state names to lowercase for matching
+  const stateGeo = new Map(
+    geojson.features.map(f => [f.properties.NAME.toLowerCase(), f]) // Convert GeoJSON state names to lowercase
+  );
+
+  // Preprocess the data to match GeoJSON state names
+  const processedData = preprocessData(data);
   console.log("Processed Data:", processedData);
 
   // Create the map
@@ -23,62 +28,26 @@ Promise.all([
   console.error("Error loading or processing data:", error);
 });
 
-// Function to preprocess data by decade
-function preprocessDataByDecade(data, geojson) {
+// Preprocess the data to match GeoJSON and prepare for the map
+function preprocessData(data) {
   console.log("Starting preprocessing...");
-  const stateGeo = new Map(
-    geojson.features.map(f => [f.properties.NAME, f])
-  );
+
+  // Normalize state names in CSV to lowercase for matching
+  const normalizedData = data.map(d => ({
+    state: d.state.toLowerCase(),  // Convert state names to lowercase
+    decade: +d.decade,
+    average_dropoff: +d.average_dropoff  // Make sure dropoff is a number
+  }));
 
   // Group data by state and decade
-  const wellDataByDecade = [];
-  const wellsById = d3.group(data, d => d.station_nm);
-
-  wellsById.forEach((records, wellId) => {
-    const state = findState(records[0], stateGeo);
-    if (!state) return; // Skip wells outside defined states
-
-    // Group records by decade (based on the year)
-    const groupedByDecade = d3.group(records, d => Math.floor(+d.year / 10) * 10);
-
-    groupedByDecade.forEach((decadeRecords, decade) => {
-      // Get the min and max year within the decade range
-      const minYear = d3.min(decadeRecords, d => +d.year);
-      const maxYear = d3.max(decadeRecords, d => +d.year);
-
-      // Find the corresponding water depths for the start and end years
-      const minDepth = +decadeRecords.find(d => +d.year === minYear).water_depth_ft;
-      const maxDepth = +decadeRecords.find(d => +d.year === maxYear).water_depth_ft;
-
-      // Calculate the dropoff for the well in this decade
-      wellDataByDecade.push({
-        state,
-        decade,
-        dropoff: maxDepth - minDepth
-      });
-    });
-  });
-
-  // Aggregate dropoffs by state and decade
-  const aggregated = d3.rollup(
-    wellDataByDecade,
-    v => d3.mean(v, d => d.dropoff), // Take the mean dropoff for each state and decade
-    d => d.state, // Group by state
-    d => d.decade // Group by decade
-  );
+  const groupedData = d3.rollup(normalizedData, v => {
+    const sumDropoff = d3.sum(v, d => d.average_dropoff);
+    const count = v.length;
+    return sumDropoff / count;  // Calculate the average dropoff
+  }, d => d.state, d => d.decade);
 
   console.log("Preprocessing completed");
-  return aggregated;
-}
-
-// Find state for a record based on latitude and longitude
-function findState(record, stateGeo) {
-  const lat = +record.dec_lat_va;
-  const lon = +record.dec_long_va;
-  for (const [state, geo] of stateGeo.entries()) {
-    if (d3.geoContains(geo, [lon, lat])) return state;
-  }
-  return null;
+  return groupedData;
 }
 
 // Create the map
@@ -107,16 +76,53 @@ function createMap(processedData, geojson) {
     .style("border-radius", "5px")
     .style("visibility", "hidden");
 
+  // Create radio buttons for decades, excluding 1910 and 1920
+  const controls = d3.select("#controls");
+  const decades = Array.from(
+    new Set(Array.from(processedData.values()).flatMap(d => Array.from(d.keys())))
+  )
+  .filter(d => d !== 1910 && d !== 1920)  // Exclude 1910 and 1920
+  .sort();
+
+  const radioButtons = controls.selectAll("div")
+    .data(decades)
+    .join("div")
+    .style("display", "inline-block")
+    .style("margin-right", "10px");
+
+  radioButtons.append("input")
+    .attr("type", "radio")
+    .attr("name", "decade")
+    .attr("id", d => d)
+    .attr("value", d => d)
+    .on("change", function () {
+      currentDecade = +this.value;
+      updateMap(currentDecade, processedData, svg, path, geojson, colorScale);
+    });
+
+  radioButtons.append("label")
+    .text(d => d)
+    .attr("for", d => d);
+
+  // Initialize currentDecade with the first decade from the dataset
+  let currentDecade = decades[0];  // Set initial value for currentDecade
+  updateMap(currentDecade, processedData, svg, path, geojson, colorScale);
+
   // Draw the map
   svg.selectAll("path")
     .data(geojson.features)
     .join("path")
     .attr("d", path)
-    .attr("fill", "#ccc")
+    .attr("fill", function (d) {
+      const state = d.properties.NAME.toLowerCase();  // Normalize GeoJSON state names to lowercase
+      const dropoff = processedData.get(state)?.get(currentDecade) ?? null;
+      if (dropoff === null) return "#ccc";  // No data available
+      return colorScale(dropoff);  // Use the color scale based on dropoff
+    })
     .attr("stroke", "#333")
     .on("mouseover", function (event, d) {
       const state = d.properties.NAME;
-      const dropoff = processedData.get(state)?.get(currentDecade) ?? null;
+      const dropoff = processedData.get(state.toLowerCase())?.get(currentDecade) ?? null;
 
       tooltip.style("visibility", "visible")
         .text(`${state}: ${dropoff !== null ? dropoff.toFixed(2) : "No data"}`);
@@ -128,52 +134,21 @@ function createMap(processedData, geojson) {
     .on("mouseout", () => {
       tooltip.style("visibility", "hidden");
     });
-
-  // Create radio buttons for decades
-  const controls = d3.select("#controls");
-  const decades = Array.from(
-  new Set(Array.from(processedData.values()).flatMap(d => Array.from(d.keys())))
-    ).sort().filter(d => d !== 1910 && d !== 1920); // Filter out 1910 and 1920
-
-  const radioButtons = controls.selectAll("div")
-    .data(decades)
-    .join("div")
-    .style("display", "inline-block")
-    .style("margin-right", "10px");
-
-  radioButtons.append("input")
-    .attr("type", "radio")
-    .attr("name", "decade")
-    .attr("value", d => d)
-    .attr("id", d => d)
-    .on("change", function () {
-      currentDecade = +this.value;
-      updateMap(currentDecade, processedData, svg, path, geojson);
-    });
-
-  radioButtons.append("label")
-    .text(d => d)
-    .attr("for", d => d);
-
-  // Initialize map with the first decade
-  let currentDecade = decades[0];
-  updateMap(currentDecade, processedData, svg, path, geojson);
 }
 
 // Update the map with data for a specific decade
-function updateMap(selectedDecade, processedData, svg, path, geojson) {
+function updateMap(selectedDecade, processedData, svg, path, geojson, colorScale) {
   console.log(`Updating map for decade: ${selectedDecade}`);
 
   svg.selectAll("path")
     .data(geojson.features)
     .join("path")
     .attr("d", path)
-    .attr("fill", d => {
-      const state = d.properties.NAME;
+    .attr("fill", function (d) {
+      const state = d.properties.NAME.toLowerCase();  // Normalize GeoJSON state names to lowercase
       const dropoff = processedData.get(state)?.get(selectedDecade) ?? null;
-
-      if (dropoff === null) return "#ccc";
-      return colorScale(dropoff); // Apply diverging color scale
+      if (dropoff === null) return "#ccc";  // No data
+      return colorScale(dropoff);  // Apply the color scale
     })
     .attr("stroke", "#333");
 }
