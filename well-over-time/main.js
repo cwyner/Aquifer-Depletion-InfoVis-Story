@@ -158,7 +158,7 @@ function updateChart(data) {
 
     //Image
     svg.append("image")
-        .attr("xlink:href", "well_image.png") // Path to your image
+        .attr("xlink:href", "well-image.png") // Path to your image
         .attr("x", (svgWidth - 715) / 2) // Center the image horizontally
         .attr("y", padding.top - 250) // Position the image
         .attr("width", 650) // Image width
