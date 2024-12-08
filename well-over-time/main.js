@@ -1,18 +1,18 @@
-const svg = d3.select("svg");
-const svgWidth = +svg.attr("width");
-const svgHeight = +svg.attr("height") + 550; // Add extra space to the SVG for the image
-svg.attr("height", svgHeight);
+const well_svg = d3.select("svg#well-drawing");
+const svgWidth = +well_svg.attr("width");
+const svgHeight = +well_svg.attr("height") + 550; // Add extra space to the SVG for the image
+well_svg.attr("height", svgHeight);
 const padding = { top: 290, right: 77, bottom: 125, left: 80 }; // Increased left padding
 
-const axisGroup = svg.append("g").attr("class", "axis-group");
-const lineGroup = svg.append("g").attr("class", "line-group");
+const axisGroup = well_svg.append("g").attr("class", "axis-group");
+const lineGroup = well_svg.append("g").attr("class", "line-group");
 
 // Initial configuration
 let selectedStation = "";
 let selectedYear = "";
 
 async function loadData() {
-    const data = await d3.csv("well_depth.csv", d => ({
+    const data = await d3.csv("well-over-time/well_depth.csv", d => ({
         station_nm: d.station_nm,
         year_datetime: d.year_datetime,
         avg_water_depth_ft: +d.avg_water_depth_ft,
@@ -116,7 +116,7 @@ function updateChart(data) {
     const tickLength = 350; // Length of the tick lines
 
     // Add tick lines on both sides of the bars
-    const ticksGroup = svg.append("g").attr("class", "ticks-group");
+    const ticksGroup = well_svg.append("g").attr("class", "ticks-group");
 
     // Left side ticks
     ticksGroup.selectAll(".left-tick")
@@ -148,7 +148,7 @@ function updateChart(data) {
 
     const titlePadding = 270; // Add extra padding for the title
 
-    svg.append("text")
+    well_svg.append("text")
         .attr("class", "chart-title")
         .attr("x", (padding.left + svgWidth - padding.right) / 2)
         .attr("y", padding.top - titlePadding) // Add the additional padding here
@@ -157,12 +157,12 @@ function updateChart(data) {
 
 
     //Image
-    svg.append("image")
-        .attr("xlink:href", "well-image.png") // Path to your image
+    well_svg.append("image")
+        .attr("xlink:href", "well-over-time/well-image.png") // Path to your image
         .attr("x", (svgWidth - 715) / 2) // Center the image horizontally
         .attr("y", padding.top - 250) // Position the image
         .attr("width", 650) // Image width
-        .attr("height", 350); // Image height    
+        .attr("height", 350); // Image height
 
     const graphYOffset = 70; // Adjust based on the image height + spacing
     d3.select(".axis-group")
@@ -170,9 +170,9 @@ function updateChart(data) {
     d3.select(".line-group")
             .attr("transform", `translate(0, ${graphYOffset})`);
 
-        
+
     // X-axis Title
-    svg.append("text")
+    well_svg.append("text")
         .attr("class", "x-axis-title")
         .attr("x", svgWidth / 2)
         .attr("y", svgHeight - 5)
@@ -180,7 +180,7 @@ function updateChart(data) {
         .text("Year");
 
     // Y-axis Title
-    svg.append("text")
+    well_svg.append("text")
         .attr("class", "y-axis-title")
         .attr("x", -svgHeight / 2 - 100)
         .attr("y", padding.left - 40)
