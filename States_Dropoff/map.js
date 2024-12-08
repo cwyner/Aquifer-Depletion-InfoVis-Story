@@ -5,7 +5,7 @@ const maxDropoff = 40; // Adjust the maximum dropoff value to cover Ohio's 36.68
 const colorScale = d3.scaleLinear()
   .domain([minDropoff, 0, maxDropoff]) // Ensure domain spans actual data range
   .range(["red", "white", "green"]); // Diverging color scheme
-  
+
 // Load the processed data CSV and GeoJSON
 Promise.all([
   d3.csv("States_Dropoff/processed_water_depth_data.csv"),
@@ -31,7 +31,7 @@ Promise.all([
 // Preprocess the data to match GeoJSON and prepare for the map
 function preprocessData(data) {
   console.log("Starting preprocessing...");
-  
+
   // Normalize state names in CSV to lowercase for matching
   const normalizedData = data.map(d => ({
     state: d.state.toLowerCase(),  // Convert state names to lowercase
@@ -93,6 +93,7 @@ function createMap(processedData, geojson) {
   radioButtons.append("input")
     .attr("type", "radio")
     .attr("name", "decade")
+    .attr("id", d => d)
     .attr("value", d => d)
     .on("change", function () {
       currentDecade = +this.value;
