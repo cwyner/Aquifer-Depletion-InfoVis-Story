@@ -10,8 +10,8 @@ const path = d3.geoPath().projection(projection);
 
 // Load GeoJSON and well CSV data
 Promise.all([
-  d3.json("usa_map.json"), // Adjust this path if needed
-  d3.csv("../preprocessed_data/depth_change.csv"), // Replace with your wells CSV file path
+  d3.json("dot_density_map/usa_map.json"), // Adjust this path if needed
+  d3.csv("preprocessed_data/depth_change.csv"), // Replace with your wells CSV file path
 ]).then(([geoData, wells]) => {
   // Convert CSV data to numeric types
   wells.forEach(d => {
@@ -51,4 +51,4 @@ Promise.all([
     .attr("opacity", 0.8)
     .append("title")
     .text(d => `${d.station_nm}: ${d.depth_change}`);
-}).catch(err => console.error("Error loading data:", err));
+})
