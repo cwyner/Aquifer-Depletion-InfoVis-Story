@@ -1,8 +1,7 @@
-// Initial configuration
-let selectedStation = "";
-let selectedYear = "";
-
-async function loadData() {
+(() => {
+    // Initial configuration
+    let selectedStation = "";
+    let selectedYear = "";
     const well_svg = d3.select("svg#well-drawing");
     const svgWidth = +well_svg.attr("width");
     const svgHeight = +well_svg.attr("height") + 550; // Add extra space to the SVG for the image
@@ -14,43 +13,46 @@ async function loadData() {
     const lineGroup = well_svg.append("g").attr("class", "line-group");
     const ticksGroup = well_svg.append("g").attr("class", "ticks-group");
 
-    const data = await d3.csv("well-over-time/well_depth.csv", d => ({
-        station_nm: d.station_nm,
-        year_datetime: d.year_datetime,
-        avg_water_depth_ft: +d.avg_water_depth_ft,
-    }));
+    async function loadData() {
+        const data = await d3.csv("well-over-time/well_depth.csv", d => ({
+            station_nm: d.station_nm,
+            year_datetime: d.year_datetime,
+            avg_water_depth_ft: +d.avg_water_depth_ft,
+        }));
 
-    // Populate station options
-    const stationOptions = Array.from(new Set(data.map(d => d.station_nm))).sort();
+        // Populate station options
+        const stationOptions = Array.from(new Set(data.map(d => d.station_nm))).sort();
 
-    d3.select("#station-select")
-        .selectAll("option")
-        .data(stationOptions)
-        .enter()
-        .append("option")
-        .text(d => d)
-        .attr("value", d => d);
+        d3.select("#station-select")
+            .selectAll("option")
+            .data(stationOptions)
+            .enter()
+            .append("option")
+            .text(d => d)
+            .attr("value", d => d);
 
-    // Initialize default station selection
-    selectedStation = stationOptions[0];
+        // Initialize default station selection
+        selectedStation = stationOptions[0];
 
-    // Populate the year dropdown dynamically based on the selected station
-    updateYearOptions(data, selectedStation);
-
-    // Add event listeners
-    d3.select("#station-select").on("change", function () {
-        selectedStation = this.value;
+        // Populate the year dropdown dynamically based on the selected station
         updateYearOptions(data, selectedStation);
-        updateChart(data);
-    });
 
-    d3.select("#year-select").on("change", function () {
-        selectedYear = this.value;
-        updateChart(data);
-    });
+        // Add event listeners
+        d3.select("#station-select").on("change", function () {
+            selectedStation = this.value;
+            updateYearOptions(data, selectedStation);
+            updateChart(data);
+        });
 
-    // Initialize chart
-    updateChart(data, padding);
+        d3.select("#year-select").on("change", function () {
+            selectedYear = this.value;
+            updateChart(data);
+        });
+
+        // Initialize chart
+        updateChart(data, padding);
+
+    }
 
     // Function to update the chart based on selected filters
     function updateChart(data, padding) {
@@ -187,29 +189,27 @@ async function loadData() {
 
         bars.exit().remove();
     }
-}
 
-// Function to update the year dropdown based on the selected station
-function updateYearOptions(data, station) {
-    const yearsForStation = Array.from(
-        new Set(data.filter(d => d.station_nm === station).map(d => d.year_datetime))
-    ).sort();
+    // Function to update the year dropdown based on the selected station
+    function updateYearOptions(data, station) {
+        const yearsForStation = Array.from(
+            new Set(data.filter(d => d.station_nm === station).map(d => d.year_datetime))
+        ).sort();
 
-    // Update the year dropdown
-    const yearSelect = d3.select("#year-select");
-    yearSelect.selectAll("option").remove();
-    yearSelect
-        .selectAll("option")
-        .data(yearsForStation)
-        .enter()
-        .append("option")
-        .text(d => d)
-        .attr("value", d => d);
+        // Update the year dropdown
+        const yearSelect = d3.select("#year-select");
+        yearSelect.selectAll("option").remove();
+        yearSelect
+            .selectAll("option")
+            .data(yearsForStation)
+            .enter()
+            .append("option")
+            .text(d => d)
+            .attr("value", d => d);
 
-    // Initialize the default year based on the station selection
-    selectedYear = yearsForStation[0];
-}
+        // Initialize the default year based on the station selection
+        selectedYear = yearsForStation[0];
+    }
 
-
-
-loadData();
+    loadData();
+})();
