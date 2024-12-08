@@ -8,8 +8,8 @@ const colorScale = d3.scaleLinear()
 
 // Load the data and GeoJSON
 Promise.all([
-  d3.csv("yearly_avg_water_depth.csv"),
-  d3.json("us-states-simple.json")
+  d3.csv("States_Dropoff/yearly_avg_water_depth.csv"),
+  d3.json("States_Dropoff/us-states-simple.json")
 ]).then(([data, geojson]) => {
   console.log("Data and GeoJSON loaded");
 
@@ -145,6 +145,7 @@ function createMap(processedData, geojson) {
     .attr("type", "radio")
     .attr("name", "decade")
     .attr("value", d => d)
+    .attr("id", d => d)
     .on("change", function () {
       currentDecade = +this.value;
       updateMap(currentDecade, processedData, svg, path, geojson);
