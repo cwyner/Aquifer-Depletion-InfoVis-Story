@@ -7,10 +7,37 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>Aquabats Final Project!</h1>
+    <div class="title">
+      <h1>Well Depletion Across the United States</h1>
+      <p>By the Aquabats. Rayan Khan, Holden Rohrer, Niki Wells, Charlie
+          Wyner</p>
+    </div>
+
+    <p>We collected a large dataset of all the well measurements done by
+    the United States Geographic Service from the
+    <a href="https://waterdata.usgs.gov/nwis">WaterData portal</a>
+    (specifically, the Historical Observations from the Groundwater category).
+    This required some non-trivial scraping effort to extract,
+    normalize, and combine the data from all 6,047 (!) wells.
+    We were left with a massive database of 21 million measurements over
+    the course of 105 years, from 1919 to today, where we assessed
+    year-on-year variation of wells and found the vast majority to be in
+    general decline.</p>
+
+
 
   <!-- Rayan's Graph -->
   <h2>Map of Well Locations across the Country</h2>
+  <p>Since wells tend to be somewhat geographically correlated, we want
+  to examine how they move together as groups in regions. One of the key
+  takeaways from this graph is that huge parts of the driest parts of
+  California, particular areas of Missouri, and parts of the Pacific
+  Northwest have seen drying up over the past few years. This indicates
+  clustering due to aquifers moving together in regions, meaning that
+  paying attention to water usage in a region with worrisome aquifer
+  levels is very important. Furthermore, most of the country has
+  declining water levels, causing much worry for the future growth of
+  agriculture in the US.</p>
   <svg width="960" height="600" id="dot-density-map"></svg>
   <svg width="500" height="500" id="histogram"></svg>
   <script src="dot_density_map/dot-density-map.js"></script>
@@ -22,21 +49,42 @@
   <!-- Charles's Graph -->
   <h2>Map of Water Level Changes over the Decades</h2>
   <p>
-    This map analyzes the average water level dropoff per state, by decade.
+    This map analyzes the average change in water level per state, by decade.
     It was calculated as follows: each water well site has coordinates associated with it,
-    so we took each pair of coordinates and classified them into states. Then, to calculate dropoff (or water gain),
+    so we took each pair of coordinates and classified them into states. Then, to calculate water level depletion (or gain),
     we took the measurement from the beginning of the decade (e.g. January 1st, 2000) and the measurement
     at the end of the decade (e.g. December 31st, 2009) for every single well. For every well in a given state,
     this calculation was averaged to get the values you see when you hover over a state. A state is colored red
     if, on average, it has lost water in that decade, or green if it has gained water. The colors grow more intense
     the further these values get from zero. If the value is close to zero, it will be close to a white color.
+    States that are gray have no data associated with them for the given decade.
+    Try it for yourself by selecting one of the radio buttons below!
   </p>
   <div id="controls"></div>
   <svg id="map"></svg>
+  <p>
+    As we cycle through the decades, we can see that the issue has worsened since 1990. While there still seem
+    to be quite a few "green" states for each of the decades, many of them are a very light green. This contrasts greatly
+    with a lot of the red states we see, which are a very deep red in some cases. For example, Idaho,
+    South Dakota and Illinois in 1990 as well as California and Arkansas in 2000 show a very deep red hue to demonstrate their
+    significant water losses. From 1990 to 2010, we don't see a single state with a gain of over 10 feet in water level,
+    but we see 5 with losses exceeding 10 feet.
+  </p>
   <div id="tooltip" class="tooltip" style="display: none;"></div>
   <script src="States_Dropoff/map.js"></script>
 
   <!-- Niki's Graph -->
+  <h2>Average Depth to Water Over Time by Sites</h2>
+  <p>
+    This chart dynamically allows you to select a specific water well site and year to see the average depth to water for the year for the site.
+    There are a lot of sites to observe, which is only a small section of all wells cited in our datset. This chart has filtered its data over several factors,
+    including removing sites that recorded less than four years of data, with consistent and consecutive yearly averages for water depth, and with
+    generally clean data (no negative numbers, no blank sections in the data, etc.). While this isn't every site that qualified, since there are thousands of
+    sites in the United States, it should give the user plenty of data to see how many sites have changed in their depth to water over time.
+    The chart is read as a reverse y-axis. For example, the inital reading, Station 943244310 in the year 1964, measures around 26ft until hitting water.
+    In 1965, this same site only measured 14 feet to hitting water, a 10 foot average increase based on daily recordings. It is designed to look like a well to
+    better represent well depth in an interesting and more "real" setting.
+  </p>
     <section id="panel">
         <h4>Station</h4>
         <div class="input-grid">

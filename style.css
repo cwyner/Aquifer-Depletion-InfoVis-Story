@@ -18,3 +18,8 @@ body {
     font: 1.2em/1.62 sans-serif;
     background-color: #ddf;
 }
+
+.title * {
+    margin: 0;
+    text-align: center;
+}
