@@ -22,7 +22,7 @@
     const path = d3.geoPath().projection(projection);
 
     // Define a diverging color scale
-    const colorScale = d3.scaleDiverging(["green", "yellow", "red"])
+    const colorScale = d3.scaleDiverging(["red", "yellow", "green"])
       .domain([-10, 0, 10])
       .clamp(true)
 
@@ -35,7 +35,7 @@
       wells.forEach(d => {
         d.dec_lat_va = +d.dec_lat_va;
         d.dec_long_va = +d.dec_long_va;
-        d.depth_change = +d.depth_change;
+        d.depth_change = -d.depth_change;
       });
 
       // Draw the map
@@ -74,6 +74,7 @@
       const brush = d3.brush()
         .extent([[0, 0], [width, height]]) // Brush area
         .on("end", updateSelectedWells);
+      brush.on("brush", updateSelectedWells)
 
       svg.append("g")
         .attr("class", "brush")
@@ -106,7 +107,7 @@
         .attr("x", hist_width / 2)
         .attr("y", 20)
         .style("font-size", "14px")
-        .text("Average Depth Change:");
+        .text("Water Level Change:");
 
       // Add x-axis label
       histogram_svg.append("text")
@@ -114,7 +115,7 @@
         .attr("x", hist_width / 2) // Centered horizontally
         .attr("y", hist_height - 10) // Below the x-axis
         .style("font-size", "14px")
-        .text("Depth Change (ft)");
+        .text("Water Level Change (ft)");
 
       // Add y-axis label
       histogram_svg.append("text")
@@ -128,19 +129,18 @@
       // Update selected wells and calculate average depth change
       function updateSelectedWells(event) {
         const selection = event.selection;
+        let selectedWells;
         if (!selection) {
-          // Reset if no area is selected
-          avgText.text("Average Depth Change: N/A");
-          return;
+            selectedWells = validWells
+        } else {
+            const [[x0, y0], [x1, y1]] = selection;
+
+            // Filter wells within the brush selection
+            selectedWells = validWells.filter(d => {
+              const [x, y] = projection([d.dec_long_va, d.dec_lat_va]);
+              return x >= x0 && x <= x1 && y >= y0 && y <= y1;
+            });
         }
-
-        const [[x0, y0], [x1, y1]] = selection;
-
-        // Filter wells within the brush selection
-        const selectedWells = validWells.filter(d => {
-          const [x, y] = projection([d.dec_long_va, d.dec_lat_va]);
-          return x >= x0 && x <= x1 && y >= y0 && y <= y1;
-        });
 
         // Calculate average depth change
         const avgDepthChange =
@@ -149,21 +149,23 @@
 
         // Update the display text
         avgText.text(
-          `Average Depth Change: ${
+          `Average Water Level Change: ${
             selectedWells.length > 0 ? avgDepthChange.toFixed(2) : "N/A"
           }`
         );
 
         function updateHistogram(selectedWells) {
+          console.log(selectedWells)
           const histogram = d3.histogram()
             .value(d => Math.min(Math.max(d.depth_change, -30), 30)) // Clamp values
             .domain([-30, 30]) // Match the data range
             .thresholds(d3.range(-30, 31, 10)); // Bin size
 
           const bins = histogram(selectedWells);
+          console.log(bins)
 
           yScale = d3.scaleLinear()
-            .domain([0, d3.max(bins, d => d.length)]) // Bin counts
+            .domain([0, Math.max(d3.max(bins, d => d.length), 1)]) // Bin counts
             .range([hist_height - padding, padding]); // Inverted range for SVG height
 
           // Clear old bins and axes
@@ -186,5 +188,6 @@
         }
         updateHistogram(selectedWells);
       }
+      updateSelectedWells({selection: null}); // Always start with a valid bar chart
     }).catch(err => console.error("Error loading data:", err));
 })();
