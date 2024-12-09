@@ -13,6 +13,15 @@
     const lineGroup = well_svg.append("g").attr("class", "line-group");
     const ticksGroup = well_svg.append("g").attr("class", "ticks-group");
 
+    const slider = d3.sliderHorizontal().displayValue(false)
+        .tickFormat(d3.format('d'));
+    const sliderG = d3.select('#year-select').append('svg')
+        .attr('width', svgWidth)
+        .attr('height', 100)
+        .append('g')
+        .attr('transform', 'translate(30,30)');
+
+
     async function loadData() {
         const data = await d3.csv("well-over-time/well_depth.csv", d => ({
             station_nm: d.station_nm,
@@ -44,14 +53,13 @@
             updateChart(data);
         });
 
-        d3.select("#year-select").on("change", function () {
-            selectedYear = this.value;
+        slider.on("onchange", function (val) {
+            selectedYear = val;
             updateChart(data);
         });
 
         // chart initialization
         updateChart(data);
-
     }
 
     // update the chart based on filters
@@ -74,6 +82,7 @@
         const yScale = d3.scaleLinear() // Depth
             .domain([paddedMaxDepth, 0])
             .range([svgHeight - padding.bottom, padding.top]);
+
 
         // axes
         axisGroup.selectAll("*").remove();
@@ -132,9 +141,9 @@
 
         // image
         well_svg.append("image")
-            .attr("xlink:href", "well-over-time/well-image.png") 
+            .attr("xlink:href", "well-over-time/well-image.png")
             .attr("x", (svgWidth - 715) / 2) // center horizontally
-            .attr("y", padding.top - 250) 
+            .attr("y", padding.top - 250)
             .attr("width", 650)
             .attr("height", 350);
 
@@ -177,22 +186,17 @@
 
     // update the year dropdown based on the selected station
     function updateYearOptions(data, station) {
-        const yearsForStation = Array.from(
+        const years = Array.from(
             new Set(data.filter(d => d.station_nm === station).map(d => d.year_datetime))
         ).sort();
 
-        const yearSelect = d3.select("#year-select");
-        yearSelect.selectAll("option").remove();
-        yearSelect
-            .selectAll("option")
-            .data(yearsForStation)
-            .enter()
-            .append("option")
-            .text(d => d)
-            .attr("value", d => d);
-
-        // initialize the default year based on the station selection
-        selectedYear = yearsForStation[0];
+        sliderG.call(slider
+            .min(d3.min(years))
+            .max(d3.max(years))
+            .marks(years)
+            .width(svgWidth-padding.right)
+        );
+        selectedYear = d3.min(years)
     }
 
     loadData();

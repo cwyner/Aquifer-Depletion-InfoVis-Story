@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <title>Final Project: The Aquabats</title>
   <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script src="https://unpkg.com/d3-simple-slider"></script>
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
@@ -96,11 +97,7 @@
         </div>
 
         <h4>Year</h4>
-        <div class="input-grid">
-            <select id="year-select">
-                <!-- Year options will be dynamically inserted here -->
-            </select>
-        </div>
+        <div id="year-select">
     </section>
 
     <svg width="800" height="400" id="well-drawing"></svg>
@@ -128,17 +125,17 @@
 
   <h2>Greatest Well Depth Changes across the Country</h2>
   <p>Below is a graph that shows the individual wells which faced the greatest increase in depth to water since 2010.
-    This showcases the significant impact that farming with unsustainable methods can do to our groundwater systems. 
+    This showcases the significant impact that farming with unsustainable methods can do to our groundwater systems.
     Action needs to be taken regarding conservation of this precious resource.
   </p>
   <svg width="500" height="500" id="top-depth-changes"></svg>
   <script src="top_depth_changes/top-depth-changes.js"></script>
   <h2>Conclusion</h2>
-  <p> In short, we have showcased the changes water wells have gone through in the United States over the course of 
+  <p> In short, we have showcased the changes water wells have gone through in the United States over the course of
     several decades. Through our analysis and visualizations, we have noticed trends of lowering water levels in our
-    grounwater, which can have detremental impacts on our farming systems, especially in the most impacted locations. 
+    grounwater, which can have detremental impacts on our farming systems, especially in the most impacted locations.
     Raising awareness of this issue and discovering ways to preserve our aquifers is imparative for the health and wellbeing
-    of our future. 
+    of our future.
   </p>
 
 </body>
