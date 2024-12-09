@@ -23,3 +23,6 @@ body {
     margin: 0;
     text-align: center;
 }
+
+.line-plot { cursor: pointer; }
+.map { width: 800px; height: 400px; margin-top: 20px; }
