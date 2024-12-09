@@ -18,21 +18,32 @@
   <!-- Charles's Graph -->
   <h2>Map of Water Level Changes over the Decades</h2>
   <p>
-    This map analyzes the average water level dropoff per state, by decade.
+    This map analyzes the average change in water level per state, by decade.
     It was calculated as follows: each water well site has coordinates associated with it,
-    so we took each pair of coordinates and classified them into states. Then, to calculate dropoff (or water gain),
+    so we took each pair of coordinates and classified them into states. Then, to calculate water level depletion (or gain),
     we took the measurement from the beginning of the decade (e.g. January 1st, 2000) and the measurement
     at the end of the decade (e.g. December 31st, 2009) for every single well. For every well in a given state,
     this calculation was averaged to get the values you see when you hover over a state. A state is colored red
     if, on average, it has lost water in that decade, or green if it has gained water. The colors grow more intense
     the further these values get from zero. If the value is close to zero, it will be close to a white color.
+    States that are gray have no data associated with them for the given decade.
+    Try it for yourself by selecting one of the radio buttons below!
   </p>
   <div id="controls"></div>
   <svg id="map"></svg>
+  <p>
+    As we cycle through the decades, we can see that the issue has worsened since 1990. While there still seem
+    to be quite a few "green" states for each of the decades, many of them are a very light green. This contrasts greatly
+    with a lot of the red states we see, which are a very deep red in some cases. For example, Idaho,
+    South Dakota and Illinois in 1990 as well as California and Arkansas in 2000 show a very deep red hue to demonstrate their
+    significant water losses. From 1990 to 2010, we don't see a single state with a gain of over 10 feet in water level,
+    but we see 5 with losses exceeding 10 feet.
+  </p>
   <div id="tooltip" class="tooltip" style="display: none;"></div>
   <script src="States_Dropoff/map.js"></script>
 
   <!-- Niki's Graph -->
+  <h2>Average Depth to Water Over Time by State</h2>
     <section id="panel">
         <h4>Station</h4>
         <div class="input-grid">
