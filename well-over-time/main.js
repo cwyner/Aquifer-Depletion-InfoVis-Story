@@ -50,12 +50,12 @@
         });
 
         // Initialize chart
-        updateChart(data, padding);
+        updateChart(data);
 
     }
 
     // Function to update the chart based on selected filters
-    function updateChart(data, padding) {
+    function updateChart(data) {
         // Filter data based on selected station and year
         const filteredData = data.filter(
             d => d.station_nm === selectedStation && d.year_datetime === selectedYear
