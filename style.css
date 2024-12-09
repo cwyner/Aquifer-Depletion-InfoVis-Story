@@ -26,3 +26,22 @@ body {
 
 .line-plot { cursor: pointer; }
 .map { width: 800px; height: 400px; margin-top: 20px; }
+
+.github-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 37px;
+  background-color: #333;
+  color: white;
+  font-size: 2em;
+  border: none;
+  border-radius: 50%;
+  text-decoration: none;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.github-button:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.3);
+}
