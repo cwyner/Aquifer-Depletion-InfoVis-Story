@@ -7,10 +7,37 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>Aquabats Final Project!</h1>
+    <div class="title">
+      <h1>Well Depletion Across the United States</h1>
+      <p>By the Aquabats. Rayan Khan, Holden Rohrer, Niki Wells, Charlie
+          Wyner</p>
+    </div>
+
+    <p>We collected a large dataset of all the well measurements done by
+    the United States Geographic Service from the
+    <a href="https://waterdata.usgs.gov/nwis">WaterData portal</a>
+    (specifically, the Historical Observations from the Groundwater category).
+    This required some non-trivial scraping effort to extract,
+    normalize, and combine the data from all 6,047 (!) wells.
+    We were left with a massive database of 21 million measurements over
+    the course of 105 years, from 1919 to today, where we assessed
+    year-on-year variation of wells and found the vast majority to be in
+    general decline.</p>
+
+
 
   <!-- Rayan's Graph -->
   <h2>Map of Well Locations across the Country</h2>
+  <p>Since wells tend to be somewhat geographically correlated, we want
+  to examine how they move together as groups in regions. One of the key
+  takeaways from this graph is that huge parts of the driest parts of
+  California, particular areas of Missouri, and parts of the Pacific
+  Northwest have seen drying up over the past few years. This indicates
+  clustering due to aquifers moving together in regions, meaning that
+  paying attention to water usage in a region with worrisome aquifer
+  levels is very important. Furthermore, most of the country has
+  declining water levels, causing much worry for the future growth of
+  agriculture in the US.</p>
   <svg width="960" height="600" id="dot-density-map"></svg>
   <svg width="500" height="500" id="histogram"></svg>
   <script src="dot_density_map/dot-density-map.js"></script>
