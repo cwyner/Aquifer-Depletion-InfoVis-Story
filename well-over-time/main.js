@@ -4,9 +4,9 @@
     let selectedYear = "";
     const well_svg = d3.select("svg#well-drawing");
     const svgWidth = +well_svg.attr("width");
-    const svgHeight = +well_svg.attr("height") + 550; // Add extra space to the SVG for the image
+    const svgHeight = +well_svg.attr("height") + 550; // extra space to the SVG for the image
     well_svg.attr("height", svgHeight);
-    const padding = { top: 290, right: 77, bottom: 125, left: 80 }; // Increased left padding
+    const padding = { top: 290, right: 77, bottom: 125, left: 80 }; // Padding for graph
     const graphYOffset = 70; // Adjust based on the image height + spacing
 
     const axisGroup = well_svg.append("g").attr("class", "axis-group");
@@ -31,13 +31,13 @@
             .text(d => d)
             .attr("value", d => d);
 
-        // Initialize default station selection
+        // default station selection
         selectedStation = stationOptions[0];
 
-        // Populate the year dropdown dynamically based on the selected station
+        // populate year dropdown dynamically based on the selected station
         updateYearOptions(data, selectedStation);
 
-        // Add event listeners
+        // event listeners
         d3.select("#station-select").on("change", function () {
             selectedStation = this.value;
             updateYearOptions(data, selectedStation);
@@ -49,33 +49,33 @@
             updateChart(data);
         });
 
-        // Initialize chart
+        // chart initialization
         updateChart(data);
 
     }
 
-    // Function to update the chart based on selected filters
+    // update the chart based on filters
     function updateChart(data) {
-        // Filter data based on selected station and year
+        // filter data based on station and year
         const filteredData = data.filter(
             d => d.station_nm === selectedStation && d.year_datetime === selectedYear
         );
 
-        // Calculate the maximum depth for the selected station across all years
+        // maximum depth calculation for the selected station across all years
         const maxDepth = d3.max(data.filter(d => d.station_nm === selectedStation), d => d.avg_water_depth_ft);
-        const paddedMaxDepth = maxDepth * 1.1; // Add 10% padding to the maximum value
+        const paddedMaxDepth = maxDepth * 1.1; // Add padding to the maximum value as to not reach the top of the chart
 
-        // Scales
-        const xScale = d3.scaleBand() // Year on the x-axis (band scale)
+        // scales
+        const xScale = d3.scaleBand() // Year
             .domain(filteredData.map(d => d.year_datetime))
             .range([padding.left, svgWidth - padding.right])
             .padding(0.1);
 
-        const yScale = d3.scaleLinear() // Depth on the y-axis (linear scale)
-            .domain([paddedMaxDepth, 0]) // Set the max depth for the y-axis across all years
+        const yScale = d3.scaleLinear() // Depth
+            .domain([paddedMaxDepth, 0])
             .range([svgHeight - padding.bottom, padding.top]);
 
-        // Axes
+        // axes
         axisGroup.selectAll("*").remove();
         axisGroup.append("g")
             .attr("transform", `translate(0, ${svgHeight - padding.bottom})`)
@@ -84,7 +84,7 @@
             .attr("transform", `translate(${padding.left}, 0)`)
             .call(d3.axisLeft(yScale));
 
-        // Add Y Gridlines
+        // Y Gridlines
         const yGrid = d3.axisLeft(yScale)
             .tickSize(-(svgWidth - padding.left - padding.right))
             .tickFormat(""); // Remove tick labels for gridlines
@@ -94,11 +94,9 @@
             .attr("transform", `translate(${padding.left}, 0)`)
             .call(yGrid);
 
-        const tickOffset = 35; // Offset to move the ticks down 100px
-        const tickLength = 350; // Length of the tick lines
+        const tickOffset = 35; // move the ticks down
 
-        // Add tick lines on both sides of the bars
-
+        // tick lines on both sides of the bar
         datum = filteredData[0]
         const xleft = xScale(datum.year_datetime) + xScale.bandwidth() * .25;
         const xright = xScale(datum.year_datetime) + xScale.bandwidth() * .75;
@@ -106,7 +104,7 @@
         console.log(svgHeight - padding.bottom)
         const ybottom = svgHeight - padding.bottom + graphYOffset;
 
-        // Left side ticks
+        // left side lines
         ticksGroup.selectAll(".left-tick")
             .data(filteredData)
             .enter()
@@ -119,46 +117,33 @@
             .attr("stroke", "grey")
             .attr("stroke-width", 1);
 
-        // Right side ticks
+        // right side lines
         ticksGroup.selectAll(".right-tick")
             .data(filteredData)
             .enter()
             .append("line")
             .attr("class", "right-tick")
-            .attr("x1", xright) // Right side of the bar
-            .attr("y1", ytop) // Start from the top of the chart + offset
-            .attr("x2", xright) // Same x position for vertical line
-            .attr("y2", ybottom) // Extend 400px down from the bar height + offset
+            .attr("x1", xright)
+            .attr("y1", ytop)
+            .attr("x2", xright)
+            .attr("y2", ybottom)
             .attr("stroke", "grey")
             .attr("stroke-width", 1);
 
-        // Chart Title
-
-        const titlePadding = 270; // Add extra padding for the title
-
-        well_svg.append("text")
-            .attr("class", "chart-title")
-            .attr("x", (padding.left + svgWidth - padding.right) / 2)
-            .attr("y", padding.top - titlePadding) // Add the additional padding here
-            .attr("text-anchor", "middle")
-            .text("Average Depth to Water Over Time by Site");
-
-
-        //Image
+        // image
         well_svg.append("image")
-            .attr("xlink:href", "well-over-time/well-image.png") // Path to your image
-            .attr("x", (svgWidth - 715) / 2) // Center the image horizontally
-            .attr("y", padding.top - 250) // Position the image
-            .attr("width", 650) // Image width
-            .attr("height", 350); // Image height
+            .attr("xlink:href", "well-over-time/well-image.png") 
+            .attr("x", (svgWidth - 715) / 2) // center horizontally
+            .attr("y", padding.top - 250) 
+            .attr("width", 650)
+            .attr("height", 350);
 
         d3.select(".axis-group")
             .attr("transform", `translate(0, ${graphYOffset})`);
         d3.select(".line-group")
                 .attr("transform", `translate(0, ${graphYOffset})`);
 
-
-        // X-axis Title
+        // X-axis title
         well_svg.append("text")
             .attr("class", "x-axis-title")
             .attr("x", svgWidth / 2)
@@ -166,7 +151,7 @@
             .attr("text-anchor", "middle")
             .text("Year");
 
-        // Y-axis Title
+        // Y-axis title
         well_svg.append("text")
             .attr("class", "y-axis-title")
             .attr("x", -svgHeight / 2 - 100)
@@ -175,7 +160,7 @@
             .attr("transform", "rotate(-90)")
             .text("Average Depth to Water (ft)");
 
-        // Bars
+        // bar
         const bars = lineGroup.selectAll("rect").data(filteredData);
 
         bars.enter()
@@ -190,13 +175,12 @@
         bars.exit().remove();
     }
 
-    // Function to update the year dropdown based on the selected station
+    // update the year dropdown based on the selected station
     function updateYearOptions(data, station) {
         const yearsForStation = Array.from(
             new Set(data.filter(d => d.station_nm === station).map(d => d.year_datetime))
         ).sort();
 
-        // Update the year dropdown
         const yearSelect = d3.select("#year-select");
         yearSelect.selectAll("option").remove();
         yearSelect
@@ -207,7 +191,7 @@
             .text(d => d)
             .attr("value", d => d);
 
-        // Initialize the default year based on the station selection
+        // initialize the default year based on the station selection
         selectedYear = yearsForStation[0];
     }
 
