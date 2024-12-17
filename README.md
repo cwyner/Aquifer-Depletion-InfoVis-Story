@@ -1,4 +1,4 @@
-*** Aquifer Depletion InfoVis Story ***
+## Aquifer Depletion InfoVis Story
 
 This repository contains the files used to make a data document driven d3.js webpage that details the aquifer depletion crisis in America.
 
